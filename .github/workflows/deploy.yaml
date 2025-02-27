@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  build-docker-image:
+  build-backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,46 +37,27 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: ./gradlew clean build
 
-      - name: gradlew bootJar
-        run: ./gradlew bootJar
-
-      - name: Docker Image Build & Push
+      - name: Build & Push Docker Image
         run: |
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-          docker build  --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/9kcal:4 .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/9kcal:4
-  deploy-to-app-server-1:
-    needs: build-docker-image
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/9kcal:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/9kcal:latest
+
+  deploy-backend:
+    needs: build-backend
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to App Server 1
+      - name: Deploy to App Server
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SSH_HOST_1 }}
+          host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script_stop: true
           script: |
-            docker-compose down
-            docker pull kahyunjung/9kcal:4
-            docker-compose up --build -d
-
-  deploy-to-app-server-2:
-
-    needs: deploy-to-app-server-1
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to App Server 2
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.SSH_HOST_2 }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script_stop: true
-          script: |
-            docker-compose down
-            docker pull beunyeong/9kcal:4
-            docker-compose up --build -d
+            cd ~/Backend/tasteful-ai
+            sudo docker-compose down
+            sudo docker rm -f $(sudo docker ps -aq)  # 기존 컨테이너 삭제
+            sudo docker rmi -f $(sudo docker images -q)  # 기존 이미지 삭제
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/9kcal:latest
+            sudo docker-compose up -d --build
+            sudo docker ps  # 실행 중인 컨테이너 확인
