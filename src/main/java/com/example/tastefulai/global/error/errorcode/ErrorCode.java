@@ -24,9 +24,9 @@ public enum ErrorCode {
     FILE_ACCESS_DENIED(HttpStatus.BAD_REQUEST, "파일에 접근할 수 없습니다."),
     NO_IMAGE_TO_DELETE (HttpStatus.BAD_REQUEST, "삭제할 파일이 존재하지 않습니다."),
 
-    INVALID_SPICY_LEVEL (HttpStatus.BAD_REQUEST, "유효하지 않은 매운 정도 값입니다."),
-    INVALID_INPUT_DATA(HttpStatus.BAD_REQUEST, "카테고리별 데이터는 최대 5개까지만 입력할 수 있습니다."),
-    DUPLICATE_DATA(HttpStatus.BAD_REQUEST, "중복된 데이터가 포함되어 있습니다."),
+//    INVALID_SPICY_LEVEL (HttpStatus.BAD_REQUEST, "유효하지 않은 매운 정도 값입니다."),
+//    INVALID_INPUT_DATA(HttpStatus.BAD_REQUEST, "카테고리별 데이터는 최대 5개까지만 입력할 수 있습니다."),
+//    DUPLICATE_DATA(HttpStatus.BAD_REQUEST, "중복된 데이터가 포함되어 있습니다."),
 
     INVALID_JSON(HttpStatus.BAD_REQUEST, "JSON 데이터 형식이 올바르지 않습니다."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청 정보입니다."),
