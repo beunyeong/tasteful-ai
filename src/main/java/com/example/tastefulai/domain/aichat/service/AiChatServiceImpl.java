@@ -9,7 +9,8 @@ import com.example.tastefulai.global.error.exception.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -43,7 +44,7 @@ public class AiChatServiceImpl implements AiChatService {
      * </ul>
      *
      * @param aiChatRequestDto AI 추천 요청 정보
-     * @param memberId 추천을 요청한 회원의 ID
+     * @param memberId         추천을 요청한 회원의 ID
      * @return 추천된 메뉴와 설명을 포함하는 {@link AiChatResponseDto}
      * @throws CustomException JSON 파싱 오류, 응답 데이터 누락 등의 문제가 발생할 경우 예외 발생
      */
@@ -51,9 +52,7 @@ public class AiChatServiceImpl implements AiChatService {
     public AiChatResponseDto createMenuRecommendation(AiChatRequestDto aiChatRequestDto, Long memberId) {
 
         aiChatCountService.incrementRequestCount(memberId);
-
         String sessionId = aiChatHistoryService.getSessionId(memberId);
-
         TasteDto tasteDto = memberService.getMemberTaste(memberId);
 
         String prompt = String.format(
@@ -69,27 +68,26 @@ public class AiChatServiceImpl implements AiChatService {
                 tasteDto.getDietaryPreferences(),
                 tasteDto.getSpicyLevel()
         );
-        String response = chatClient.prompt().user(prompt).call().content();
 
-//        String response = "{\"recommendation\": \"김치찌개\"}";   // TODO: chatClient 로직으로 대체
-
-        String recommendation;
-        String description;
+        // PromptTemplate을 명시적으로 사용
+        PromptTemplate promptTemplate = new PromptTemplate(prompt);
+        String response = chatClient.call(promptTemplate.create()).getResult().getOutput().getContent();
 
         try {
             Map<String, String> responseMap = objectMapper.readValue(response, Map.class);
 
-            recommendation = Optional.ofNullable(responseMap.get("recommendation"))
+            String recommendation = Optional.ofNullable(responseMap.get("recommendation"))
                     .orElseThrow(() -> new CustomException(ErrorCode.RECOMMENDATION_PARSING_ERROR));
 
-            description = Optional.ofNullable(responseMap.get("description"))
+            String description = Optional.ofNullable(responseMap.get("description"))
                     .orElseThrow(() -> new CustomException(ErrorCode.DESCRIPTION_PARSING_ERROR));
 
-        } catch (JsonProcessingException jsonProcessingException) {
+            aiChatHistoryService.saveChatHistory(memberId, sessionId, recommendation, description);
+            return new AiChatResponseDto(recommendation, description);
+
+        } catch (JsonProcessingException e) {
             throw new CustomException(ErrorCode.JSON_PROCESSING_ERROR);
         }
-        aiChatHistoryService.saveChatHistory(memberId, sessionId, recommendation, description);
-
-        return new AiChatResponseDto(recommendation, description);
     }
+
 }

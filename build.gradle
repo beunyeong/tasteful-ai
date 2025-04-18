@@ -22,7 +22,6 @@ configurations {
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 ext {
@@ -96,10 +95,10 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     // OpenAI API 연동을 위한 WebClient
-    implementation "org.springframework.ai:spring-ai-openai-spring-boot-starter"
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:0.8.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.ai:spring-ai-openai'
     implementation "org.springframework.boot:spring-boot-starter-webflux"
-    implementation platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT")
 }
 
 tasks.named('test') {
