@@ -4,6 +4,7 @@ import com.example.tastefulai.domain.aichat.entity.AiChatHistory;
 import com.example.tastefulai.domain.image.entity.Image;
 import com.example.tastefulai.domain.member.enums.GenderRole;
 import com.example.tastefulai.domain.member.enums.MemberRole;
+import com.example.tastefulai.domain.member.enums.ProviderType;
 import com.example.tastefulai.domain.taste.entity.dietarypreferences.TasteDietaryPreferences;
 import com.example.tastefulai.domain.taste.entity.dislikefoods.TasteDislikeFoods;
 import com.example.tastefulai.domain.taste.entity.genres.TasteGenres;
@@ -35,7 +36,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(nullable = false, unique = true)
@@ -53,6 +54,10 @@ public class Member extends BaseEntity {
     private MemberRole memberRole;
 
     private LocalDateTime deletedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider", nullable = false)
+    private ProviderType provider;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Image> images;
@@ -76,7 +81,7 @@ public class Member extends BaseEntity {
     private List<AiChatHistory> aiChatHistories = new ArrayList<>();
 
     public Member(MemberRole memberRole, String email, String password, String nickname, Integer age,
-                  GenderRole genderRole, LocalDateTime deletedAt) {
+                  GenderRole genderRole, LocalDateTime deletedAt, ProviderType provider) {
         this.memberRole = memberRole;
         this.email = email;
         this.password = password;
@@ -84,6 +89,7 @@ public class Member extends BaseEntity {
         this.age = age;
         this.genderRole = genderRole;
         this.deletedAt = deletedAt;
+        this.provider = provider;
     }
 
     @VisibleForTesting
