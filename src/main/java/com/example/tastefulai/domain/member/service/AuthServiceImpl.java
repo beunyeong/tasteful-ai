@@ -3,6 +3,7 @@ package com.example.tastefulai.domain.member.service;
 import com.example.tastefulai.domain.member.dto.MemberRequestDto;
 import com.example.tastefulai.domain.member.dto.MemberResponseDto;
 import com.example.tastefulai.domain.member.entity.Member;
+import com.example.tastefulai.domain.member.enums.ProviderType;
 import com.example.tastefulai.domain.member.repository.MemberRepository;
 import com.example.tastefulai.domain.member.validation.MemberValidation;
 import com.example.tastefulai.global.common.dto.JwtAuthResponse;
@@ -55,8 +56,9 @@ public class AuthServiceImpl implements AuthService {
                 memberRequestDto.getNickname(),
                 memberRequestDto.getAge(),
                 memberRequestDto.getGenderRole(),
-                null
-        );
+                null,
+                ProviderType.LOCAL
+                );
         memberRepository.save(member);
 
         return MemberResponseDto.fromEntity(member);
