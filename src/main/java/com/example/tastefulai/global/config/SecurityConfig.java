@@ -1,5 +1,7 @@
 package com.example.tastefulai.global.config;
 
+import com.example.tastefulai.domain.member.auth.CustomOAuth2UserService;
+import com.example.tastefulai.domain.member.auth.OAuth2SuccessHandler;
 import com.example.tastefulai.global.config.filter.JwtAuthFilter;
 import com.example.tastefulai.global.constant.EndpointConstants;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     /**
      * 비밀번호 암호화(BCryptPasswordEncoder) 등록
@@ -47,24 +51,36 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable)
-
                 .cors(cors -> cors.configure(httpSecurity))
-
                 .csrf(AbstractHttpConfigurer::disable)
-
-                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/map", "location", EndpointConstants.AUTH_SIGNUP, EndpointConstants.AUTH_LOGIN).permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/map", "location",
+                                EndpointConstants.AUTH_SIGNUP,
+                                EndpointConstants.AUTH_LOGIN,
+                                "/ws-chat/**",
+                                "/test",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/api-docs"
+                        ).permitAll()
                         .requestMatchers("/api/location/**").authenticated()
                         .requestMatchers("/api/admins/**").hasRole("ADMIN")
-                        .requestMatchers("/ws-chat/**").permitAll()
-                        .requestMatchers("/test").permitAll()
                         .anyRequest().authenticated()
                 )
-
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
+                )
+                .logout(logout -> logout.permitAll())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
