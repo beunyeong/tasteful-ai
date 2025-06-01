@@ -13,6 +13,7 @@ import com.example.tastefulai.domain.chatting.service.ChattingServiceImpl;
 import com.example.tastefulai.domain.member.entity.Member;
 import com.example.tastefulai.domain.member.enums.GenderRole;
 import com.example.tastefulai.domain.member.enums.MemberRole;
+import com.example.tastefulai.domain.member.enums.ProviderType;
 import com.example.tastefulai.domain.member.service.AdminMemberService;
 import com.example.tastefulai.domain.member.service.MemberService;
 import com.example.tastefulai.global.error.errorcode.ErrorCode;
@@ -27,6 +28,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,8 +71,8 @@ class ChattingServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        admin = new Member(MemberRole.ADMIN, "adminUser@example.com", "Password123!", "Admin", 30, GenderRole.FEMALE, null);
-        user = new Member(MemberRole.USER, "testUser@example.com", "passwOrd123@", "User", 24, GenderRole.MALE, null);
+        admin = new Member(MemberRole.ADMIN, "adminUser@example.com", "Password123!", "Admin", 30, GenderRole.FEMALE, LocalDateTime.now(), ProviderType.GOOGLE);
+        user = new Member(MemberRole.USER, "testUser@example.com", "passwOrd123@", "User", 24, GenderRole.MALE, LocalDateTime.now(), ProviderType.GOOGLE);
         chattingroom = new Chattingroom(1L, "Test Room", admin);
     }
 

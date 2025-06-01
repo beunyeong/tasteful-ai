@@ -7,6 +7,7 @@ import com.example.tastefulai.domain.chatting.repository.ChattingroomRepository;
 import com.example.tastefulai.domain.member.entity.Member;
 import com.example.tastefulai.domain.member.enums.GenderRole;
 import com.example.tastefulai.domain.member.enums.MemberRole;
+import com.example.tastefulai.domain.member.enums.ProviderType;
 import com.example.tastefulai.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,7 @@ class ChattingMessageRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(new Member(MemberRole.USER, "testUser@example.com", "Password123!", "TestUser", 20, GenderRole.MALE, null));
+        member = memberRepository.save(new Member(MemberRole.USER, "testUser@example.com", "Password123!", "TestUser", 20, GenderRole.MALE, LocalDateTime.now(), ProviderType.GOOGLE));
 
         chattingroom = chattingroomRepository.save(new Chattingroom("Test Room", member));
 

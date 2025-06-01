@@ -8,6 +8,7 @@ import com.example.tastefulai.domain.chatting.websocket.enums.MessageType;
 import com.example.tastefulai.domain.member.entity.Member;
 import com.example.tastefulai.domain.member.enums.GenderRole;
 import com.example.tastefulai.domain.member.enums.MemberRole;
+import com.example.tastefulai.domain.member.enums.ProviderType;
 import com.example.tastefulai.domain.member.service.MemberService;
 import com.example.tastefulai.global.error.errorcode.ErrorCode;
 import com.example.tastefulai.global.error.exception.CustomException;
@@ -18,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,7 +59,7 @@ public class WebSocketChatControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        member = new Member(MemberRole.USER, "testUser@example.com", "passwOrd123@", "User", 24, GenderRole.MALE, null);
+        member = new Member(MemberRole.USER, "testUser@example.com", "passwOrd123@", "User", 24, GenderRole.MALE, LocalDateTime.now(), ProviderType.GOOGLE);
     }
 
     @Test
@@ -96,7 +99,7 @@ public class WebSocketChatControllerTest {
         when(jwtProvider.validateToken(VALID_TOKEN)).thenReturn(true);
         when(jwtProvider.getEmailFromToken(VALID_TOKEN)).thenReturn(TEST_EMAIL);
 
-        Member differentMember = new Member(MemberRole.USER, "wrong@example.com", "password", "WrongUser", 30, GenderRole.FEMALE, null);
+        Member differentMember = new Member(MemberRole.USER, "wrong@example.com", "password", "WrongUser", 30, GenderRole.FEMALE, LocalDateTime.now(), ProviderType.GOOGLE);
 
         when(memberService.findByEmail(TEST_EMAIL)).thenReturn(differentMember);
 

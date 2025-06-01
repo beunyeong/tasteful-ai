@@ -4,6 +4,7 @@ import com.example.tastefulai.domain.image.entity.Image;
 import com.example.tastefulai.domain.member.entity.Member;
 import com.example.tastefulai.domain.member.enums.GenderRole;
 import com.example.tastefulai.domain.member.enums.MemberRole;
+import com.example.tastefulai.domain.member.enums.ProviderType;
 import com.example.tastefulai.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +35,7 @@ class ImageRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(new Member(MemberRole.USER, "testUser@example.com", "Password123!", "TestUser", 20, GenderRole.MALE, null));
+        member = memberRepository.save(new Member(MemberRole.USER, "testUser@example.com", "Password123!", "TestUser", 20, GenderRole.MALE, LocalDateTime.now(), ProviderType.GOOGLE));
 
         image = imageRepository.save(new Image("image.jpg", "image/jpeg", 10L, "https://imageUrl.jpg", member));
     }
