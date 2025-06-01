@@ -51,8 +51,8 @@ class AdminMemberServiceImplTest {
     void setUp() {
 
         LocalDateTime now = LocalDateTime.now();
-        admin = new Member(MemberRole.ADMIN, "admin@example.com", "password", "AdminUser", 35, GenderRole.FEMALE, now, ProviderType.GOOGLE);
-        user = new Member(MemberRole.USER, "user@example.com", "password", "NormalUser", 25, GenderRole.MALE, now, ProviderType.GOOGLE);
+        admin = new Member(MemberRole.ADMIN, "admin@example.com", "Password123!", "AdminUser", 35, GenderRole.FEMALE, LocalDateTime.now(), ProviderType.GOOGLE);
+        user = new Member(MemberRole.USER, "user@example.com", "Password123", "NormalUser", 25, GenderRole.MALE, LocalDateTime.now(), ProviderType.GOOGLE);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
