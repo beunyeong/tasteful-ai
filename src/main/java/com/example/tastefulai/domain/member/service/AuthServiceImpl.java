@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
                 memberRequestDto.getNickname(),
                 memberRequestDto.getAge(),
                 memberRequestDto.getGenderRole(),
-                null,
+                LocalDateTime.now(),
                 ProviderType.LOCAL
                 );
         memberRepository.save(member);
