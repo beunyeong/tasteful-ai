@@ -3,6 +3,7 @@ package com.example.tastefulai.member;
 import com.example.tastefulai.domain.member.entity.Member;
 import com.example.tastefulai.domain.member.enums.GenderRole;
 import com.example.tastefulai.domain.member.enums.MemberRole;
+import com.example.tastefulai.domain.member.enums.ProviderType;
 import com.example.tastefulai.domain.member.repository.AdminMemberRepository;
 import com.example.tastefulai.domain.member.service.AdminMemberServiceImpl;
 import com.example.tastefulai.global.error.errorcode.ErrorCode;
@@ -50,8 +51,8 @@ class AdminMemberServiceImplTest {
     void setUp() {
 
         LocalDateTime now = LocalDateTime.now();
-        admin = new Member(MemberRole.ADMIN, "admin@example.com", "password", "AdminUser", 35, GenderRole.FEMALE, now);
-        user = new Member(MemberRole.USER, "user@example.com", "password", "NormalUser", 25, GenderRole.MALE, now);
+        admin = new Member(MemberRole.ADMIN, "admin@example.com", "password", "AdminUser", 35, GenderRole.FEMALE, now, ProviderType.GOOGLE);
+        user = new Member(MemberRole.USER, "user@example.com", "password", "NormalUser", 25, GenderRole.MALE, now, ProviderType.GOOGLE);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
